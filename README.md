@@ -1,1 +1,3 @@
 # MEAN
+
+This MEAN application
