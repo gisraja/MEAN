@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const jwt = require('jsonwebtoken')
 const User = require("../models/users")
 
 const mongoose = require('mongoose')
@@ -14,6 +15,29 @@ mongoose.connect(db, err => {
 
 })
 
+function verifyToken(req, res, next) {
+    if (!req.headers.authorization) {
+        return res.status(401).send("unauthorized access")
+    }
+    let token = req.headers.authorization.split(" ")[1]
+    if (token === "null") {
+        return res.status(401).send("unauthorized access")
+    }
+    let payload = undefined
+    try {
+         payload = jwt.verify(token, "password")
+    } catch (error) {
+        if (error.name === "JsonWebTokenError"){
+            return res.status(401).send("unauthorized access")
+        }
+    }
+    if (!payload) {
+        return res.status(401).send("unauthorized access")
+    }
+    req.userId = payload.subject
+    next()
+}
+
 router.get("/", (req, res) => {
     res.send("Hello from api")
 })
@@ -26,7 +50,9 @@ router.post("/register", (req, res) => {
             console.log(err)
         }
         else {
-            res.status(200).send(regUser)
+            let payload = { subject: regUser._id }
+            let token = jwt.sign(payload, "password")
+            res.status(200).send({ token })
         }
     })
 })
@@ -48,7 +74,9 @@ router.post("/login", (req, res) => {
 
                 }
                 else {
-                    res.status(200).send(udata)
+                    let payload = { subject: udata._id }
+                    let token = jwt.sign(payload, "password")
+                    res.status(200).send({ token })
                 }
             }
         }
@@ -56,125 +84,125 @@ router.post("/login", (req, res) => {
     })
 })
 
-router.get("/events", (req,res)=>{
+router.get("/events", (req, res) => {
     let events = [
         {
-            "id":1,
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
@@ -183,125 +211,125 @@ router.get("/events", (req,res)=>{
     res.json(events)
 })
 
-router.get("/special", (req,res)=>{
+router.get("/special",verifyToken, (req, res) => {
     let events = [
         {
-            "id":1,
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
-        },{
-            "id":1,
+        }, {
+            "id": 1,
             "name": "Auto Expo",
             "description": "Description of Auto expo",
             "date": "2018-12-31"
